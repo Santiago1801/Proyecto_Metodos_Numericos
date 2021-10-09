@@ -11,6 +11,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatSelectModule} from '@angular/material/select';
 import {MatRadioModule} from '@angular/material/radio';
+import {MatSliderModule} from '@angular/material/slider';
 
 const myModules = [
     MatSidenavModule,
@@ -24,7 +25,8 @@ const myModules = [
     MatPaginatorModule,
     MatDialogModule,
     MatSelectModule,
-    MatRadioModule
+    MatRadioModule,
+    MatSliderModule
 ]
 
 
