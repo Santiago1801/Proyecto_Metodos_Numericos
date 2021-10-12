@@ -36,6 +36,10 @@
                                             <input type="text" class="form-control" id="limiteSuperior" formControlName="limiteSuperior">
                                         </div>
                                         <div class="form-group">
+                                            <label for="error">Porcentaje de Error</label>
+                                            <input type="text" class="form-control" id="error" formControlName="error" placeholder="0.00001">
+                                        </div>
+                                        <div class="form-group">
                                             <label for="decimales">Decimales:   {{decimales}}</label>
                                             <mat-slider class="slider"
                                             tickInterval="15"
@@ -46,20 +50,6 @@
                                             [ngModelOptions]="{standalone: true}"
                                             aria-label="unit(s)"></mat-slider>
                                         </div>
-
-                                        <div class="form-group">
-                                            <label for="limiteSuperior">Porcentaje de error:  {{error}}</label>
-                                            <mat-slider class="slider"
-                                            tickInterval="100"
-                                            step="1"
-                                            min="1"
-                                            max="100"
-                                            [(ngModel)]="error"
-                                            [ngModelOptions]="{standalone: true}"
-                                            aria-label="unit(s)">
-                                            </mat-slider>
-                                        </div>
-                                        
                                         <div class="form-group">
                                             <button class="btn btn-info text-white" type="button" (click)="calcular()">Calcular</button>
                                         </div>
@@ -71,7 +61,7 @@
                             <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
                                 <ng-container matColumnDef="intervalo">
-                                  <th mat-header-cell *matHeaderCellDef> Intervalo </th>
+                                  <th mat-header-cell *matHeaderCellDef> Iteración </th>
                                   <td mat-cell *matCellDef="let element"> {{element.intervalo}} </td>
                                 </ng-container>
                               
