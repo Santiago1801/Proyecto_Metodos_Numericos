@@ -17,7 +17,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   decimales = 0;
   error = 1;
   parser;
-  resultados = [{}];
 
   constructor(
     public parameters:ParametersForms,
@@ -61,6 +60,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     let xb = this.parameters.baseForm.value.limiteSuperior
     let punto_anterior = 0;
     let calculo = 112;
+    let resultados = [{}];
     
     while (Math.abs(calculo) >= tolerancia){
       
@@ -72,7 +72,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
         calculo = punto_medio - punto_anterior;
       }
 
-      this.resultados.push({intervalo:inter,a:xa,b:xb,x1:Math.abs(f_d),error:calculo == 0?Math.abs(punto_medio):Math.abs(calculo)});
+      if(inter == 1){
+        resultados = [{intervalo:inter,a:xa,b:xb,x1:Math.abs(f_d),error:calculo == 0?Math.abs(punto_medio):Math.abs(calculo)}];
+      }else{
+        resultados.push({intervalo:inter,a:xa,b:xb,x1:Math.abs(f_d),error:calculo == 0?Math.abs(punto_medio):Math.abs(calculo)});
+      }
+      
 
       let faxfd = f_a*f_d
 
@@ -92,7 +97,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       inter++;  
     }
 
-    console.log(this.resultados);
+    this.dataSource.data=resultados;
    
 
   }
