@@ -11,17 +11,22 @@ import { ParametersForms } from 'src/app/utils/parametersForm';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit, AfterViewInit {
+  //Columnas de la tabla
   displayedColumns: string[] = ['intervalo', 'a', 'b', 'x1','error'];
+  //Datos de la tabla
   dataSource=new MatTableDataSource();
+  //Paginator
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  //Variable que va a guardaqr el # de decimales
   decimales = 0;
-  error = 1;
+  //Variable para instanciar la libreria parser
   parser;
 
   constructor(
     public parameters:ParametersForms,
     private toastr: ToastrService,
   ) { 
+    //Instancia de la librería parse que nos permite leer las ecuaciones y sustituir las variables de estas
     this.parser = new Parser({
       operators: {
         // These default to true, but are included to be explicit
@@ -46,6 +51,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    //Formato del paginador
     this.dataSource.paginator = this.paginator;
   }
 
@@ -53,20 +59,30 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   calcular(){
+    //Variable que lleva las iteraciones
     let inter = 1;
+    //Variable que va a guardar los puntos medios
     let f_d = 112;
+    //Guarda la tolerancia
     let tolerancia = this.parameters.baseForm.value.error;
+    //Guardan los limites
     let xa =this.parameters.baseForm.value.limiteInferior
     let xb = this.parameters.baseForm.value.limiteSuperior
+    //Guarda el punto medio anterior
     let punto_anterior = 0;
+    //Guarda el margen de error
     let calculo = 112;
+    //Array que va almacenando los resultados de cada iteración
     let resultados = [{}];
     
     while (Math.abs(calculo) >= tolerancia){
       
       let punto_medio = (( parseFloat(xa) + parseFloat(xb))/2);
+      //Llama a la función para que sustituya x con el # del limite inferior
       let f_a = this.funcion(xa).toFixed(4);
+      //Llama a la función para que sustituya x con el resultado del punto medio
       f_d = this.funcion(punto_medio).toFixed(9);
+
 
       if(punto_medio != 0){
         calculo = punto_medio - punto_anterior;
@@ -103,8 +119,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   funcion(f_x:number){
+    //Pasa la ecuación 
     let f = this.parser.parse(this.parameters.baseForm.value.funcion);
-  
+    
+    //Susituye las variables de la ecuación con el valor dado y devuevle el resultado
     return f.evaluate({x:f_x});
   }
 
