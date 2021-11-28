@@ -65,6 +65,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     let f_d = 112;
     //Guarda la tolerancia
     let tolerancia = this.parameters.baseForm.value.error;
+    let decimal = this.parameters.baseForm.value.decimales;
+    console.log("decimales" + this.decimales);
     //Guardan los limites
     let xa =this.parameters.baseForm.value.limiteInferior
     let xb = this.parameters.baseForm.value.limiteSuperior
@@ -79,9 +81,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
       
       let punto_medio = (( parseFloat(xa) + parseFloat(xb))/2);
       //Llama a la función para que sustituya x con el # del limite inferior
-      let f_a = this.funcion(xa).toFixed(4);
+      let f_a = this.funcion(xa).toFixed(this.decimales);
       //Llama a la función para que sustituya x con el resultado del punto medio
-      f_d = this.funcion(punto_medio).toFixed(9);
+      f_d = this.funcion(punto_medio).toFixed(this.decimales);
 
 
       if(punto_medio != 0){
