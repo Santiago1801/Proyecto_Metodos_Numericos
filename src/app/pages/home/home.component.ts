@@ -21,6 +21,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   decimales = 0;
   //Variable para instanciar la libreria parser
   parser;
+  //Variable para guardar la ecuación
+  ecuacion = "";
 
   constructor(
     public parameters:ParametersForms,
@@ -59,70 +61,97 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   calcular(){
+    this.ecuacion = this.parameters.baseForm.value.funcion;
+    //Variable comodin
+    let calc = 0;
     //Variable que lleva las iteraciones
     let inter = 1;
     //Variable que va a guardar los puntos medios
     let f_d = 112;
     //Guarda la tolerancia
     let tolerancia = this.parameters.baseForm.value.error;
-    let decimal = this.parameters.baseForm.value.decimales;
-    console.log("decimales" + this.decimales);
     //Guardan los limites
-    let xa =this.parameters.baseForm.value.limiteInferior
-    let xb = this.parameters.baseForm.value.limiteSuperior
+    let xa =this.parameters.baseForm.value.limiteInferior;
+    let xb = this.parameters.baseForm.value.limiteSuperior;
+    let xaux =  0;
+    if (!isNaN(xa) && !isNaN(xb)) {
+      calc = 1;
+      if (xa>xb){
+        xaux = xa;
+        xa = xb;
+        xb = xaux;
+      }
+    }
+    for (let index = 1; index < this.ecuacion.length; index++) {
+      const element = this.ecuacion[index];
+      if ((element == "x" && !isNaN(parseInt(this.ecuacion[index-1],10))) || (element == "(" && this.ecuacion[index-1] == ")")){
+        this.ecuacion = this.ecuacion.substring(0, index) + "*" + this.ecuacion.substring(index);
+        index++;
+      }
+    }
+    for (let index = 0; index < this.ecuacion.length; index++) {
+      const element = this.ecuacion[index];
+      if (element == "x"){
+        calc=2;
+      }
+    }
     //Guarda el punto medio anterior
     let punto_anterior = 0;
     //Guarda el margen de error
-    let calculo = 112;
+    let calculo = tolerancia+1;
     //Array que va almacenando los resultados de cada iteración
     let resultados = [{}];
     
-    while (Math.abs(calculo) >= tolerancia){
+    if (calc == 2){
+      while (Math.abs(calculo) >= tolerancia){
       
-      let punto_medio = (( parseFloat(xa) + parseFloat(xb))/2);
-      //Llama a la función para que sustituya x con el # del limite inferior
-      let f_a = this.funcion(xa).toFixed(this.decimales);
-      //Llama a la función para que sustituya x con el resultado del punto medio
-      f_d = this.funcion(punto_medio).toFixed(this.decimales);
-
-
-      if(punto_medio != 0){
-        calculo = punto_medio - punto_anterior;
+        let punto_medio = (( parseFloat(xa) + parseFloat(xb))/2);
+        //Llama a la función para que sustituya x con el # del limite inferior
+        let f_a = this.funcion(xa).toFixed(this.decimales);
+        //Llama a la función para que sustituya x con el resultado del punto medio
+        f_d = this.funcion(punto_medio).toFixed(this.decimales);
+  
+  
+        if(punto_medio != 0){
+          calculo = punto_medio - punto_anterior;
+        }
+  
+        if(inter == 1){
+          resultados = [{intervalo:inter,a:xa,b:xb,x1:Math.abs(f_d),error:calculo == 0?Math.abs(punto_medio):Math.abs(calculo)}];
+        }else{
+          resultados.push({intervalo:inter,a:xa,b:xb,x1:Math.abs(f_d),error:calculo == 0?Math.abs(punto_medio):Math.abs(calculo)});
+        }
+        
+  
+        let faxfd = f_a*f_d
+  
+        if(faxfd>0){
+          xa = punto_medio.toFixed(this.decimales)
+          punto_anterior = punto_medio;
+        }else{
+          xb = punto_medio.toFixed(this.decimales)
+          punto_anterior = punto_medio;
+        }
+  
+        if(Math.abs(calculo)<=tolerancia){
+          break
+        }
+  
+  
+        inter++;  
       }
+  
+      this.dataSource.data=resultados;
+    } else {
 
-      if(inter == 1){
-        resultados = [{intervalo:inter,a:xa,b:xb,x1:Math.abs(f_d),error:calculo == 0?Math.abs(punto_medio):Math.abs(calculo)}];
-      }else{
-        resultados.push({intervalo:inter,a:xa,b:xb,x1:Math.abs(f_d),error:calculo == 0?Math.abs(punto_medio):Math.abs(calculo)});
-      }
-      
-
-      let faxfd = f_a*f_d
-
-      if(faxfd>0){
-        xa = punto_medio.toFixed(4)
-        punto_anterior = punto_medio;
-      }else{
-        xb = punto_medio.toFixed(4)
-        punto_anterior = punto_medio;
-      }
-
-      if(Math.abs(calculo)<=tolerancia){
-        break
-      }
-
-
-      inter++;  
     }
-
-    this.dataSource.data=resultados;
    
 
   }
 
   funcion(f_x:number){
     //Pasa la ecuación 
-    let f = this.parser.parse(this.parameters.baseForm.value.funcion);
+    let f = this.parser.parse(this.ecuacion);
     
     //Susituye las variables de la ecuación con el valor dado y devuevle el resultado
     return f.evaluate({x:f_x});
