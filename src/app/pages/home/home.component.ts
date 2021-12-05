@@ -139,7 +139,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   
         inter++;  
       }
-      this.parameters.baseForm.value.result = Math.abs(calculo);
+      this.parameters.baseForm.patchValue({result: Math.abs(punto_anterior)});
   
       this.dataSource.data=resultados;
     } else {

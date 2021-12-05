@@ -3,14 +3,20 @@
         <div class="col-md-10">
             <p class="fs-1">¿Qué es el método de bisección?</p>
             <p class="mt-2 fs-5">
-                El método de bisección, es una forma de encontrar raices de una ecuación, el cual consisten en tomar un intervalo donde se encuentre una raiz, e irlo dividiendo a la mitad, hasta aproximarse a la raíz.
+                El método de bisección, es una forma de encontrar raices de una ecuación, el cual consisten en tomar un intervalo donde se encuentre una raiz, e irlo dividiendo a la mitad, hasta aproximarse a la raíz tanto como desee.
             </p>
         </div>
 
         <div class="col-md-10">
             <p class="fs-1">Correcto uso del programa</p>
             <p class="mt-2 fs-5">
-                El programa esta diseñado para resolver ecuaciones complejas, no obstante, es importante tomar en cuenta la forma correcta de escribir las ecuaciones, la misma es capaz de resolver exponentes ('^'), logaritmos ('ln'), ecuaciones trigonométricas (sin, cos, tan); tambien es importante mencionar, que al ser un método de bisección, solamente deben contar con una incognita ('x'), ya que de lo contrario será imposible resolver la misma.
+                El programa esta diseñado para resolver ecuaciones complejas, no obstante, es importante tomar en cuenta la forma correcta de escribir dichas ecuaciones, la aplicación es capaz de resolver exponentes ('^'), logaritmos ('ln'), e incluso, ecuaciones trigonométricas (sin, cos, tan).
+            </p>
+            <p>
+                Por tratarse del método de bisección, las ecuaciones por resolver con esta aplicación solamente pueden contar con una incógnita ('x').
+            </p>
+            <p>
+                Antes de hacer click en el botón "Calcular", por favor asegúrese de haber indicado todos los parámetros requeridos.
             </p>
         </div>
 
@@ -25,7 +31,7 @@
                                     <form [formGroup]="parameters.baseForm">
                                         <div class="form-group">
                                             <label for="funcion">Función</label>
-                                            <input type="text" class="form-control" id="funcion" placeholder="Ingrese la ecuación" formControlName="funcion">
+                                            <input type="text" class="form-control" id="funcion" placeholder="Ingrese la función" formControlName="funcion">
                                         </div>
                                         <div class="form-group">
                                             <label for="limiteInferior">Límite Inferior</label>
