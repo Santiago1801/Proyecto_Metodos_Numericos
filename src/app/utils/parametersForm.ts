@@ -13,6 +13,7 @@ export class ParametersForms{
         limiteInferior: ['', [Validators.required]],
         limiteSuperior: ['', [Validators.required]],
         decimales: [0, [Validators.required]],
-        error: ['', [Validators.required]]
+        error: ['', [Validators.required]],
+        result: []
     })
 }

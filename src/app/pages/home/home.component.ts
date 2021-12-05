@@ -104,7 +104,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     
     if (calc == 2){
       while (Math.abs(calculo) >= tolerancia){
-      
         let punto_medio = (( parseFloat(xa) + parseFloat(xb))/2);
         //Llama a la función para que sustituya x con el # del limite inferior
         let f_a = this.funcion(xa).toFixed(this.decimales);
@@ -113,11 +112,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
   
   
         if(punto_medio != 0){
-          calculo = punto_medio - punto_anterior;
+          calculo = ((punto_medio - punto_anterior)/punto_medio);
         }
   
         if(inter == 1){
-          resultados = [{intervalo:inter,a:xa,b:xb,x1:Math.abs(f_d),error:calculo == 0?Math.abs(punto_medio):Math.abs(calculo)}];
+          resultados = [{intervalo:inter,a:xa,b:xb,x1:Math.abs(f_d),error:100}];
         }else{
           resultados.push({intervalo:inter,a:xa,b:xb,x1:Math.abs(f_d),error:calculo == 0?Math.abs(punto_medio):Math.abs(calculo)});
         }
@@ -140,6 +139,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   
         inter++;  
       }
+      this.parameters.baseForm.value.result = Math.abs(calculo);
   
       this.dataSource.data=resultados;
     } else {
