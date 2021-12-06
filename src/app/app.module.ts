@@ -20,8 +20,8 @@ import { FooterComponent } from './shared/components/footer/footer.component';
     BrowserModule,
     AppRoutingModule,
     ToastrModule.forRoot({
-      timeOut: 100000,
-      positionClass: 'toast-bottom-right',
+      timeOut: 3000,
+      positionClass: 'toast-top-full-width',
       preventDuplicates: true,
     }),
     MDBBootstrapModule.forRoot(),

@@ -35,15 +35,15 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="limiteInferior">Límite Inferior</label>
-                                            <input type="text" class="form-control" id="limiteInferior" formControlName="limiteInferior">
+                                            <input type="number" class="form-control" id="limiteInferior" formControlName="limiteInferior">
                                         </div>
                                         <div class="form-group">
                                             <label for="limiteSuperior">Límite Superior</label>
-                                            <input type="text" class="form-control" id="limiteSuperior" formControlName="limiteSuperior">
+                                            <input type="number" class="form-control" id="limiteSuperior" formControlName="limiteSuperior">
                                         </div>
                                         <div class="form-group">
                                             <label for="error">Porcentaje de Error</label>
-                                            <input type="text" class="form-control" id="error" formControlName="error" placeholder="Ingrese el error máximo deseado">
+                                            <input type="number" class="form-control" id="error" formControlName="error" placeholder="Ingrese el error máximo deseado">
                                         </div>
                                         <div class="form-group">
                                             <label for="decimales">Decimales:   {{decimales}}</label>
@@ -60,8 +60,7 @@
                                             <button class="btn btn-info text-white" type="button" (click)="calcular()">Calcular</button>
                                         </div>
                                         <div class="form-group">
-                                            <label for="result">Raíz aproximada:</label>
-                                            <input id="result" formControlName="result" class="form-control">
+                                            <label for="result">Raíz aproximada: {{raiz_aproximada}}</label>
                                         </div>
                                     </form>
                                 </div>

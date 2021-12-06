@@ -17,8 +17,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
   dataSource=new MatTableDataSource();
   //Paginator
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  //Variable que va a guardaqr el # de decimales
+  //Variable que va a guardar el # de decimales
   decimales = 0;
+  //Variable que va a guardar la raiz aproximada
+  raiz_aproximada = 0;
   //Variable para instanciar la libreria parser
   parser;
   //Variable para guardar la ecuación
@@ -151,18 +153,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
             inter++;  
           }
           this.parameters.baseForm.patchValue({result: Math.abs(punto_anterior)});
-      
+          this.raiz_aproximada = Math.abs(punto_anterior);
           this.dataSource.data=resultados;
         }else{
-          console.log("RAIZ")
-          
+          this.toastr.warning('No hay raíz en el intervalo seleccionado', 'Verifique el intervalo')
         }
       }else{
-        console.log("incognita")
+        this.toastr.error('No hay una incognita en la función', 'Verifique la función')
         //AGREGA MSJ DE INCOGNITA
       }
     }else {
-      console.log("datos");
+      this.toastr.warning('Debe completar todos los campos para poder realizar el calculo', 'Verifique la información')
       //AGREGA MSJ DE DATOS
     }
     
