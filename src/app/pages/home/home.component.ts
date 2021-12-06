@@ -3,6 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Parser } from 'expr-eval-ex';
 import { ToastrService } from 'ngx-toastr';
+import { MatDialog } from '@angular/material/dialog';
 import { ParametersForms } from 'src/app/utils/parametersForm';
 
 @Component({
@@ -27,6 +28,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   constructor(
     public parameters:ParametersForms,
     private toastr: ToastrService,
+    public dialog: MatDialog
   ) { 
     //Instancia de la librería parse que nos permite leer las ecuaciones y sustituir las variables de estas
     this.parser = new Parser({
@@ -61,6 +63,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   calcular(){
+    let conta = 0;
     this.ecuacion = this.parameters.baseForm.value.funcion;
     //Variable comodin
     let calc = 0;
@@ -74,79 +77,97 @@ export class HomeComponent implements OnInit, AfterViewInit {
     let xa =this.parameters.baseForm.value.limiteInferior;
     let xb = this.parameters.baseForm.value.limiteSuperior;
     let xaux =  0;
-    if (!isNaN(xa) && !isNaN(xb)) {
-      calc = 1;
-      if (xa>xb){
-        xaux = xa;
-        xa = xb;
-        xb = xaux;
+    let incog = 0;
+    if (xa.length != 0 && xb.length != 0 && this.ecuacion.length != 0 && tolerancia.length != 0){
+      if (!isNaN(xa) && !isNaN(xb)) {
+        calc = 1;
+        if (xa>xb){
+          xaux = xa;
+          xa = xb;
+          xb = xaux;
+        }
       }
-    }
-    for (let index = 1; index < this.ecuacion.length; index++) {
-      const element = this.ecuacion[index];
-      if ((element == "x" && !isNaN(parseInt(this.ecuacion[index-1],10))) || (element == "(" && this.ecuacion[index-1] == ")")){
-        this.ecuacion = this.ecuacion.substring(0, index) + "*" + this.ecuacion.substring(index);
-        index++;
+  
+      //Agrego signos de multiplicación donde corresponda
+      for (let index = 0; index <= this.ecuacion.length; index++) {
+        const element = this.ecuacion[index];
+        if ((element == "x" && !isNaN(parseInt(this.ecuacion[index-1],10))) || (element == "(" && this.ecuacion[index-1] == ")")){
+          this.ecuacion = this.ecuacion.substring(0, index) + "*" + this.ecuacion.substring(index);
+          index++;
+        }
       }
-    }
-    for (let index = 0; index < this.ecuacion.length; index++) {
-      const element = this.ecuacion[index];
-      if (element == "x"){
-        calc=2;
+      //Valida que exista una incognita
+      for (let index = 0; index <= this.ecuacion.length; index++) {
+        const element = this.ecuacion[index];
+        if (element == "x"){
+          incog = 1;
+        }
       }
+      if (incog == 1){
+        let limin = this.funcion(xa);
+        let limmax = this.funcion(xb);
+        if (limin > 0 && limmax > 0 || limin < 0 && limmax < 0){
+          calc = 4;
+        }
+        if (calc != 4){
+          //Guarda el punto medio anterior
+          let punto_anterior = 0;
+          //Guarda el margen de error
+          let calculo = tolerancia+1;
+          //Array que va almacenando los resultados de cada iteración
+          let resultados = [{}];
+          while (Math.abs(calculo) >= tolerancia){
+            let punto_medio = (( parseFloat(xa) + parseFloat(xb))/2);
+            //Llama a la función para que sustituya x con el # del limite inferior
+            let f_a = this.funcion(xa).toFixed(this.decimales);
+            //Llama a la función para que sustituya x con el resultado del punto medio
+            f_d = this.funcion(punto_medio).toFixed(this.decimales);
+      
+      
+            if(punto_medio != 0){
+              calculo = ((punto_medio - punto_anterior)/punto_medio);
+            }
+      
+            if(inter == 1){
+              resultados = [{intervalo:inter,a:xa,b:xb,x1:Math.abs(f_d),error:100}];
+            }else{
+              resultados.push({intervalo:inter,a:xa,b:xb,x1:Math.abs(f_d),error:calculo == 0?Math.abs(punto_medio):Math.abs(calculo)});
+            }
+            
+      
+            let faxfd = f_a*f_d
+      
+            if(faxfd>0){
+              xa = punto_medio.toFixed(this.decimales)
+              punto_anterior = punto_medio;
+            }else{
+              xb = punto_medio.toFixed(this.decimales)
+              punto_anterior = punto_medio;
+            }
+      
+            if(Math.abs(calculo)<=tolerancia){
+              break
+            }
+      
+      
+            inter++;  
+          }
+          this.parameters.baseForm.patchValue({result: Math.abs(punto_anterior)});
+      
+          this.dataSource.data=resultados;
+        }else{
+          console.log("RAIZ")
+          
+        }
+      }else{
+        console.log("incognita")
+        //AGREGA MSJ DE INCOGNITA
+      }
+    }else {
+      console.log("datos");
+      //AGREGA MSJ DE DATOS
     }
-    //Guarda el punto medio anterior
-    let punto_anterior = 0;
-    //Guarda el margen de error
-    let calculo = tolerancia+1;
-    //Array que va almacenando los resultados de cada iteración
-    let resultados = [{}];
     
-    if (calc == 2){
-      while (Math.abs(calculo) >= tolerancia){
-        let punto_medio = (( parseFloat(xa) + parseFloat(xb))/2);
-        //Llama a la función para que sustituya x con el # del limite inferior
-        let f_a = this.funcion(xa).toFixed(this.decimales);
-        //Llama a la función para que sustituya x con el resultado del punto medio
-        f_d = this.funcion(punto_medio).toFixed(this.decimales);
-  
-  
-        if(punto_medio != 0){
-          calculo = ((punto_medio - punto_anterior)/punto_medio);
-        }
-  
-        if(inter == 1){
-          resultados = [{intervalo:inter,a:xa,b:xb,x1:Math.abs(f_d),error:100}];
-        }else{
-          resultados.push({intervalo:inter,a:xa,b:xb,x1:Math.abs(f_d),error:calculo == 0?Math.abs(punto_medio):Math.abs(calculo)});
-        }
-        
-  
-        let faxfd = f_a*f_d
-  
-        if(faxfd>0){
-          xa = punto_medio.toFixed(this.decimales)
-          punto_anterior = punto_medio;
-        }else{
-          xb = punto_medio.toFixed(this.decimales)
-          punto_anterior = punto_medio;
-        }
-  
-        if(Math.abs(calculo)<=tolerancia){
-          break
-        }
-  
-  
-        inter++;  
-      }
-      this.parameters.baseForm.patchValue({result: Math.abs(punto_anterior)});
-  
-      this.dataSource.data=resultados;
-    } else {
-
-    }
-   
-
   }
 
   funcion(f_x:number){
