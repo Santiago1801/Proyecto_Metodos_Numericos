@@ -3,7 +3,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Parser } from 'expr-eval-ex';
 import { ToastrService } from 'ngx-toastr';
-import { MatDialog } from '@angular/material/dialog';
 import { ParametersForms } from 'src/app/utils/parametersForm';
 
 @Component({
@@ -28,7 +27,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   constructor(
     public parameters:ParametersForms,
     private toastr: ToastrService,
-    public dialog: MatDialog
   ) { 
     //Instancia de la librería parse que nos permite leer las ecuaciones y sustituir las variables de estas
     this.parser = new Parser({

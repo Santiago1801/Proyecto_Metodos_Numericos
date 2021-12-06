@@ -5,7 +5,6 @@ import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { MaterialModule } from 'src/app/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 
 
 @NgModule({
@@ -17,8 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
     HomeRoutingModule,
     MaterialModule,
     ReactiveFormsModule,
-    FormsModule,
-    MatDialog
+    FormsModule
   ]
 })
 export class HomeModule { }
